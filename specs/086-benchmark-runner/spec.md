@@ -48,8 +48,11 @@ re-deriving intent from the diff.
 
 ## Constants
 
-- `run_replay` defaults SHALL be `n_tasks=3`, `horizon=5`, `seed=0`, `baseline="empty"`
+- `run_replay` defaults SHALL be `n_tasks=3`, `horizon=5`, `seed=0`, `baseline="heuristic"`
   (`DEFAULT_BASELINE`), `w_judge=0.6`, `w_objective=0.4`, `dual_order_judge=True`, `min_history=10`.
+  The default opponent SHALL NOT be `empty`: against the empty floor every non-trivial challenger
+  wins every task, pinning the judge component at `1.0` so it cannot discriminate (#2379). `empty`
+  remains selectable via `--baseline empty` as the explicit calibration floor.
 - `CLONE_TIMEOUT_SECONDS` SHALL be `300` — the wall-clock bound on `git clone` inside
   `_materialize_repo_source`.
 - The challenger-perspective judge component map (`_JUDGE_COMPONENT`) SHALL be

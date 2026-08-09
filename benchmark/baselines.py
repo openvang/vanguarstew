@@ -370,7 +370,15 @@ BASELINES = {
     "queue_first": queue_first_solve,
     "stability_first": stability_first_solve,
 }
-DEFAULT_BASELINE = "empty"
+# The default opponent every challenger is judged against. It is DELIBERATELY not ``empty``:
+# against the empty floor any non-trivial challenger wins every task, so the pairwise judge
+# component (``_JUDGE_COMPONENT[challenger] == 1.0``) saturates at 1.0 and stops discriminating —
+# it adds nothing on top of the objective anchor, and inflates ``composite_mean`` toward the
+# ceiling (#2379). ``heuristic`` — a deterministic, LLM-free maintainer that extrapolates the
+# repo's own recent behavior — is a real bar: a challenger has to actually out-reason "keep doing
+# what this repo has been doing" to win, so ``judge_mean`` can move. ``empty`` stays available via
+# ``--baseline empty`` as the explicit floor for calibration.
+DEFAULT_BASELINE = "heuristic"
 
 
 def get_baseline(name: str):

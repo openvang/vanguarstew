@@ -273,6 +273,24 @@ def test_empty_baseline_proposes_nothing():
     assert out["philosophy"] == {}
 
 
+def test_default_baseline_is_a_real_opponent_not_the_empty_floor():
+    """Regression guard for the judge saturation (#2379).
+
+    If the default opponent is the ``empty`` floor, any non-trivial challenger beats it on every
+    task, ``_JUDGE_COMPONENT[challenger]`` pins ``judge_mean`` at 1.0, and the judge half of the
+    composite stops discriminating (it also inflates ``composite_mean``). The default MUST be a
+    real maintainer that proposes concrete work a challenger has to out-reason to beat.
+    """
+    from benchmark.baselines import DEFAULT_BASELINE
+
+    assert DEFAULT_BASELINE != "empty"
+    default_opponent = get_baseline(DEFAULT_BASELINE)
+    out = default_opponent(context=CTX, n=5)
+    assert isinstance(out.get("plan"), list) and len(out["plan"]) > 0, (
+        "the default judge opponent must propose concrete work, not the empty floor"
+    )
+
+
 def test_heuristic_baseline_derives_a_real_plan():
     out = heuristic_solve(context=CTX, n=5)
     plan = out["plan"]
