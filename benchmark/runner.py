@@ -1,8 +1,10 @@
 """Orchestrate the time-travel replay: freeze -> run agents -> pairwise judge -> tally.
 
 The agent entrypoint is loaded by file path (as ninja's validator loads `agent.py`), so the
-top-level `agent.py` module and the `agent/` package don't collide. For MVP the challenger is
-compared against a naive baseline maintainer; in M2+ this becomes challenger-vs-king.
+top-level `agent.py` module and the `agent/` package don't collide. The challenger is judged
+against a reference opponent (`DEFAULT_BASELINE`, now the deterministic `heuristic` maintainer —
+against the old `empty` floor every real challenger won 100%, saturating the judge component at
+1.0, #2379); in M2+ this becomes challenger-vs-king.
 """
 
 from __future__ import annotations

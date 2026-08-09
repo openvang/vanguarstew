@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Changed
+- Benchmark: the default pairwise-judge opponent (`DEFAULT_BASELINE`) is now `heuristic`, not
+  `empty`. Against the `empty` floor every non-trivial challenger won every task, pinning the
+  judge component at `1.0` so it could not discriminate and inflating `composite_mean` toward the
+  ceiling; the deterministic, LLM-free `heuristic` maintainer is a real bar a challenger must
+  out-reason (#2379). `empty` remains selectable via `--baseline empty` as the calibration floor.
+  **Note:** leaderboard scores and anchors produced against `empty` are not comparable to new
+  ones and must be regenerated.
+
 ## [0.9.0] - 2026-08-07
 
 This release also rolls up entries that had accumulated under _Unreleased_ since 0.3.0.
