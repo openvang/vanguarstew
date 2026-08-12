@@ -23,8 +23,8 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.4", "cryptography>=41,<46"]
-private-memory = ["cryptography>=41,<46"]
+dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.4", "cryptography>=41,<51"]
+private-memory = ["cryptography>=41,<51"]
 tee = ["dcap-qvl==0.5.3"]
 
 [project.scripts]
