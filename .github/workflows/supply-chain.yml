@@ -1,0 +1,42 @@
+name: supply-chain
+
+# Dependency / supply-chain vulnerability scan (#2395). The agent installs dependencies and the
+# attested eval image is the TCB the "verify don't trust" story rests on, so a known-vulnerable or
+# poisoned dependency must be surfaced. Scans the pinned uv.lock resolution against the PyPA/OSV
+# advisory database via pip-audit.
+#
+# Rollout is ADVISORY first (continue-on-error) to establish a clean baseline without blocking
+# merges; flip to blocking (drop continue-on-error, add to required checks) once green — see #2395.
+
+on:
+  pull_request:
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/supply-chain.yml"
+  push:
+    branches: [test, main]
+  schedule:
+    # Weekly, so a newly-disclosed CVE in an already-pinned dependency surfaces without a dep change.
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip pip-audit uv
+      - name: Audit locked dependencies for known vulnerabilities (advisory rollout, see #2395)
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          # Resolve the pinned lockfile to a plain requirements set (exclude the project itself),
+          # then audit it against the advisory DB.
+          uv export --frozen --no-emit-project --format requirements-txt -o audit-requirements.txt
+          pip-audit --requirement audit-requirements.txt
