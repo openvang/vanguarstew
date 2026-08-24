@@ -69,7 +69,14 @@ def run(argv=None) -> int:
             print(f"verify_attestation: cannot read transcript ({args.transcript}): {exc}",
                   file=sys.stderr)
             raise SystemExit(2) from exc
-        claimed = (evidence.get("inputs") or {}).get("transcript_digest")
+        inputs = evidence.get("inputs")
+        if inputs is not None and not isinstance(inputs, dict):
+            print(
+                f"verify_attestation: evidence.inputs must be a mapping, got {type(inputs).__name__}",
+                file=sys.stderr,
+            )
+            raise SystemExit(2)
+        claimed = (inputs or {}).get("transcript_digest")
         report["checks"]["transcript_digest"] = recorded == claimed
         report["ok"] = all(report["checks"].values())
         if recorded != claimed:
