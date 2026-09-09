@@ -25,7 +25,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.4", "cryptography>=41,<46"]
 private-memory = ["cryptography>=41,<46"]
-tee = ["dcap-qvl==0.5.3"]
+tee = ["dcap-qvl==0.6.3"]
 
 [project.scripts]
 vanguarstew = "vanguarstew_runtime.cli:main"
